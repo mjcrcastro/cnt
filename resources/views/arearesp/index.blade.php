@@ -82,7 +82,9 @@
         $('#arearespTable').DataTable({
             "processing": true,
             "serverSide": true,
-            "select"    : true,
+            "select": {
+                style: 'single'
+            },
             "ajax": {
                 "url": "{{ url('/arearesp_ajax') }}",
                 "type": "GET",
