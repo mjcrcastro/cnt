@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AreaRespController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,4 @@ Route::get('/', function () {
 
 Route::resource('catalog', 'App\Http\Controllers\CatalogController');
 Route::resource('arearesp', 'App\Http\Controllers\AreaRespController');
+Route::get('arearesp_ajax',[AreaRespController::class, 'arearespAjax']);

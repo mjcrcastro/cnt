@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\AreaResp;
 use Illuminate\Http\Request;
 
-class AreaRespController extends Controller
-{
+class AreaRespController extends Controller {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         //
         return view('arearesp.index');
     }
@@ -23,8 +22,7 @@ class AreaRespController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //
     }
 
@@ -34,8 +32,7 @@ class AreaRespController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         //
     }
 
@@ -45,8 +42,7 @@ class AreaRespController extends Controller
      * @param  \App\Models\AreaResp  $areaResp
      * @return \Illuminate\Http\Response
      */
-    public function show(AreaResp $areaResp)
-    {
+    public function show(AreaResp $areaResp) {
         //
     }
 
@@ -56,8 +52,7 @@ class AreaRespController extends Controller
      * @param  \App\Models\AreaResp  $areaResp
      * @return \Illuminate\Http\Response
      */
-    public function edit(AreaResp $areaResp)
-    {
+    public function edit(AreaResp $areaResp) {
         //
     }
 
@@ -68,8 +63,7 @@ class AreaRespController extends Controller
      * @param  \App\Models\AreaResp  $areaResp
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AreaResp $areaResp)
-    {
+    public function update(Request $request, AreaResp $areaResp) {
         //
     }
 
@@ -79,8 +73,28 @@ class AreaRespController extends Controller
      * @param  \App\Models\AreaResp  $areaResp
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AreaResp $areaResp)
-    {
+    public function destroy(AreaResp $areaResp) {
         //
     }
+
+    public function arearespAjax(Request $request) {
+
+
+        if ($request->ajax()) {//return json data only to ajax queries
+            $filter = $request->get('search.value');
+
+            $arearesp = AreaResp::where('description', 'LIKE', "%" . $filter . "%")->get();
+
+            $response['draw'] = $request->get('draw');
+
+            $response['recordsTotal'] = AreaResp::all()->count();
+
+            $response['recordsFiltered'] = $arearesp->count();
+
+            $response['data'] = array_slice($arearesp->toArray(), $request->get('start'), $request->get('length'));
+
+            return response()->json($response);
+        }
+    }
+
 }
