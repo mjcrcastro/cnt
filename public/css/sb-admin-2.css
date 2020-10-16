@@ -10398,10 +10398,10 @@ a:focus {
     width:  16px;
     height: 16px;
     vertical-align: middle;
-    background-size: 16px 16px;
     background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23fff' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z' clip-rule='evenodd'/></svg>");
     background-repeat: no-repeat;
     background-size: 1rem 1rem;
+    background-position: center center;
 }
 
 .sidebar #sidebarToggle:hover {
