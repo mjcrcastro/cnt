@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AreaResp;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AreaRespController extends Controller {
 
@@ -33,7 +34,21 @@ class AreaRespController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        //
+        //name of the action code, a corresponding entry in actions table
+        $action_code = 'arearesp_store';
+        $message = userCan($action_code, Auth::user());
+        if ($message) {
+            return redirect()->back()->with('message', $message);
+        }
+            $input = $request->all();
+            
+            $this->validate($request, AreaResp::rules);
+
+                //if valid data, create a new Area de Responsabilidad
+                $area_resp = AreaResp::create($input);
+                //and return to the index
+                return redirect()->route('arearesp.index')
+                                ->with('message', 'Storage ' . $area_resp->description . ' created');
     }
 
     /**
