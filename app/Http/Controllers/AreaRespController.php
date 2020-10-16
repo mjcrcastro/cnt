@@ -80,10 +80,12 @@ class AreaRespController extends Controller {
     public function arearespAjax(Request $request) {
 
 
-        if ($request->ajax()) {//return json data only to ajax queries
-            $filter = $request->get('search.value');
+        if ($request->ajax()) {//return json data only to ajax queries 
+            $filter = $request->search['value'];
 
-            $arearesp = AreaResp::where('description', 'LIKE', "%" . $filter . "%")->get();
+            $arearesp = AreaResp::where('description', 'LIKE', "%" . $filter . "%")
+                    ->orderBy('description', $request->order[0]['dir'])
+                    ->get();
 
             $response['draw'] = $request->get('draw');
 

@@ -17,7 +17,7 @@
                         <h6 class="m-0 font-weight-bold text-primary">Areas de Responsabilidad</h6>
                     </div>  
                     <div class="col-sm">
-                        <button type="button" class="btn btn-secondary">Nuevo
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editAreaResp">Nuevo
                             <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="vendor/bootstrap/img/bootstrap-icons.svg#plus-circle"/>
                             </svg>
@@ -63,6 +63,9 @@
     </div>
 </div>
 <!-- /.container-fluid -->
+
+@include('arearesp.modal_new')
+
 @stop
 
 @section('scripts')
