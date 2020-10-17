@@ -24,7 +24,13 @@ class AreaRespController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        //
+        //Display new AreaResp
+        $action_code = 'storages_create';
+        $message = usercan($action_code, Auth::user());
+        if ($message) {
+            return Redirect::back()->with('message', $message);
+        }
+        return view('arearesp.create');
     }
 
     /**
@@ -36,19 +42,22 @@ class AreaRespController extends Controller {
     public function store(Request $request) {
         //name of the action code, a corresponding entry in actions table
         $action_code = 'arearesp_store';
+
         $message = userCan($action_code, Auth::user());
         if ($message) {
             return redirect()->back()->with('message', $message);
         }
-            $input = $request->all();
-            
-            $this->validate($request, AreaResp::rules);
 
-                //if valid data, create a new Area de Responsabilidad
-                $area_resp = AreaResp::create($input);
-                //and return to the index
-                return redirect()->route('arearesp.index')
-                                ->with('message', 'Storage ' . $area_resp->description . ' created');
+        $request->merge(['created_by' => 'default created']);
+        $request->merge(['updated_by' => 'default created']);
+
+        $request->validate(AreaResp::$createRules);
+
+        //if valid data, create a new Area de Responsabilidad
+        $area_resp = AreaResp::create($request->all());
+        //and return to the index
+        return redirect()->route('arearesp.index')
+                        ->with('message', 'Storage ' . $area_resp->description . ' created');
     }
 
     /**
@@ -67,8 +76,23 @@ class AreaRespController extends Controller {
      * @param  \App\Models\AreaResp  $areaResp
      * @return \Illuminate\Http\Response
      */
-    public function edit(AreaResp $areaResp) {
-        //
+    public function edit($id) {
+        //Redirect to arearesp editor
+        $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
+        $message = usercan($action_code, Auth::user());
+        if ($message) { //I the user does not have permissions
+            return redirect()->back()->with('message', $message);
+        }
+
+        $arearesp = AreaResp::find($id);
+
+        if (is_null($arearesp)) { //if no shop is found
+            return redirect()->route('arearesp.index'); //go to previous page
+        }
+
+        //otherwise display the shop editor view
+        return view('arearesp.edit', compact('arearesp'));
+        // End of actual code to execute
     }
 
     /**
@@ -78,8 +102,20 @@ class AreaRespController extends Controller {
      * @param  \App\Models\AreaResp  $areaResp
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AreaResp $areaResp) {
+    public function update(Request $request, $id) {
         //
+        $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
+        $message = usercan($action_code, Auth::user());
+        if ($message) {
+            return redirect()->back()->with('message', $message);
+        }
+        //make sure the description is unique but 
+        //exclude the $id for the current shop
+        $request->validate(['description' => 'required|unique:area_resps,description,' . $id . 'id']);
+
+        $arearesp = AreaResp::find($id);
+        $arearesp->update($request->all());
+        return redirect()->route('arearesp.index');
     }
 
     /**
@@ -88,8 +124,14 @@ class AreaRespController extends Controller {
      * @param  \App\Models\AreaResp  $areaResp
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AreaResp $areaResp) {
-        //
+    public function destroy($id) {
+        $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
+        $message = usercan($action_code, Auth::user());
+        if ($message) {
+            return redirect()->back()->with('message', $message);
+        }
+        AreaResp::find($id)->delete();
+        return redirect()->route('arearesp.index');
     }
 
     public function arearespAjax(Request $request) {
