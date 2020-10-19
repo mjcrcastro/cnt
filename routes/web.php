@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AreaRespController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +18,9 @@ Route::get('/', function () {
 });
 
 Route::resource('catalog', 'App\Http\Controllers\CatalogController');
+//Areas de Responsabilidad
 Route::resource('arearesp', 'App\Http\Controllers\AreaRespController');
-Route::get('arearesp_ajax',[AreaRespController::class, 'arearespAjax']);
+Route::get('arearesp_ajax',[App\Http\Controllers\AreaRespController::class, 'arearespAjax']);
+//Centros de análisis
+Route::resource('costCenters', 'App\Http\Controllers\CostCenterController');
+Route::get('cost_centers_ajax',[App\Http\Controllers\CostCenterController::class, 'costCenterAjax']);

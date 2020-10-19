@@ -1,5 +1,9 @@
 
 @extends('master')
+@section('meta')
+<!-- Usado para filtrar la lista de centros -->
+<meta name="area-resp_id" content="{{ $arearesp->id }}">
+@stop
 
 @section('css')
 <!-- Custom styles for this page -->
@@ -17,32 +21,24 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md">
-                        <h6 class="m-0 font-weight-bold text-secondary">Areas de Responsabilidad</h6>
+                        <h6 class="m-0 font-weight-bold text-secondary"> {{ link_to_route('arearesp.index',$arearesp->description, null, 'class="text-primary"') }} / Centros de Análisis</h6>
                     </div>  
                     <div class="col-md">
 
-                        <a class="btn btn-block text-nowrap btn-primary" href="{{ route('arearesp.create')}}" role="button">Nuevo  
+                        <a class="btn btn-block text-nowrap btn-primary" href="{{ route('costCenters.create',['area_resp_id'=>$arearesp->id])}}" role="button">Nuevo  
                             <svg class="bi" width="24" height="24" fill="currentColor">
                             <use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#plus-circle"/>
                             </svg>
                         </a>
                     </div>
-                    <div id="showCenters" class="col-md">
-
-                        <a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Centros 
-                            <svg aling ="class="bi" width="24" height="24" fill="currentColor">
-                            <use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#arrow-right-circle"/>
-                            </svg>
-                        </a>
-                    </div>
-                    <div id="editArearesp" class="col-md">
+                    <div id="editCentro" class="col-md">
                         <a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Editar
                             <svg class="bi" width="24" height="24" fill="currentColor">
                             <use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#pencil-square"/>
                             </svg>
                         </a>
                     </div>
-                    <div id ="deleteArearesp" class="col-md">
+                    <div id ="deleteCentro" class="col-md">
                         <a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Borrar
                             <svg class="bi" width="24" height="24" fill="currentColor">
                             <use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#x-circle"/>
@@ -54,7 +50,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive-sm">
-                <table class="table table-striped table-bordered" id="arearespTable" width="100%" cellspacing="0">
+                <table class="table table-striped table-bordered" id="centrosTable" width="100%" cellspacing="0">
                     <thead>
                         <tr >
                             <th></th>
@@ -90,18 +86,17 @@
  * a datatables jQuery plugin on table id="example"
  */
 $(document).ready(function () {
-    var editButton = $('#editArearesp');
-    var deleButton = $('#deleteArearesp');
-    var showCentersButton = $('#showCenters');
+    var editButton = $('#editCentro');
+    var deleButton = $('#deleteCentro');
     var csrf = $('#csrf');
-    var table = $('#arearespTable').DataTable({
+    var table = $('#centrosTable').DataTable({
         "processing": true,
         "serverSide": true,
         "select": {
             style: 'single'
         },
         "ajax": {
-            "url": "{{ url('/arearesp_ajax') }}",
+            "url": "{{ url('/cost_centers_ajax?area_resp_id=') }}" + $('meta[name="area-resp_id"]').attr('content'),
             "type": "GET",
             'headers': {'X-CSRF-TOKEN':  $('meta[name="csrf-token"]').attr('content')
             }
@@ -121,18 +116,16 @@ $(document).ready(function () {
      table //here we change 
         .on( 'select', function ( e, dt, type, indexes ) {
             var rowData = table.rows( indexes ).data().toArray();
-            editButton.html( '<a class="btn btn-block text-nowrap btn-primary" href="/arearesp/'+ rowData[0]['id'] + '/edit" role="button">Editar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#pencil-square"/></svg></a>' );
-            deleButton.html( '<form method="POST" action="/arearesp/' + rowData[0]['id'] + '" accept-charset="UTF-8">' +
+            editButton.html( '<a class="btn btn-block text-nowrap btn-primary" href="/costCenters/'+ rowData[0]['id'] + '/edit" role="button">Editar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#pencil-square"/></svg></a>' );
+            deleButton.html( '<form method="POST" action="/costCenters/' + rowData[0]['id'] + '" accept-charset="UTF-8">' +
                         '<input name="_method" type="hidden" value="DELETE">' +
                         '<input name="_token" type="hidden" value="' + $('meta[name="csrf-token"]').attr('content') + '">' +
                         '<button class="btn btn-block text-nowrap btn-primary " onclick="if(!confirm(&#039;Are you sure to delete this item?&#039;)){return false;};" type="submit" value="Delete">Borrar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#x-circle"/></svg></button>' +
                         '</form>');
-            showCentersButton.html( '<a class="btn btn-block text-nowrap btn-primary" href="/costCenters?area_resp_id='+ rowData[0]['id'] + '" role="button">Centros <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#arrow-right-circle"/></svg></a>' );    
         } )
         .on( 'deselect', function ( e, dt, type, indexes ) {
             editButton.html( '<a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Editar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#pencil-square"/></svg></a>' );
             deleButton.html( '<a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Borrar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#x-circle"/></svg></a>' );
-            showCentersButton.html( '<a class="btn btn-block text-nowrap btn-primary" href=#" role="button">Centros <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#arrow-right-circle"/></svg></a>' );    
         } );
 });
 </script>

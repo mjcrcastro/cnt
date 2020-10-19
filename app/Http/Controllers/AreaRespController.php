@@ -24,11 +24,11 @@ class AreaRespController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        //Display new AreaResp
-        $action_code = 'storages_create';
+        //Display new AreaResp Form
+        $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) {
-            return Redirect::back()->with('message', $message);
+            return redirect()->back()->with('message', $message);
         }
         return view('arearesp.create');
     }
@@ -41,7 +41,7 @@ class AreaRespController extends Controller {
      */
     public function store(Request $request) {
         //name of the action code, a corresponding entry in actions table
-        $action_code = 'arearesp_store';
+        $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
 
         $message = userCan($action_code, Auth::user());
         if ($message) {
@@ -57,7 +57,7 @@ class AreaRespController extends Controller {
         $area_resp = AreaResp::create($request->all());
         //and return to the index
         return redirect()->route('arearesp.index')
-                        ->with('message', 'Storage ' . $area_resp->description . ' created');
+                        ->with('message', 'Area ' . $area_resp->description . ' Registrada');
     }
 
     /**
@@ -136,7 +136,11 @@ class AreaRespController extends Controller {
 
     public function arearespAjax(Request $request) {
 
-
+        $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
+        $message = usercan($action_code, Auth::user());
+        if ($message) {
+            return redirect()->back()->withErrors('message', $message);
+        }
         if ($request->ajax()) {//return json data only to ajax queries 
             $filter = $request->search['value'];
 
