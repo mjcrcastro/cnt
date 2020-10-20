@@ -19,7 +19,7 @@
         <div class="card-body">
             <div class="container-fluid">
                 {{ Form::open(array('route'=>'costCenters.store')) }}
-                @include('centros.form')
+                @include('costCenters.form')
                 {{ Form::close() }}
             </div>
         </div>

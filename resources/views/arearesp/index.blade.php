@@ -132,7 +132,10 @@ $(document).ready(function () {
         .on( 'deselect', function ( e, dt, type, indexes ) {
             editButton.html( '<a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Editar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#pencil-square"/></svg></a>' );
             deleButton.html( '<a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Borrar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#x-circle"/></svg></a>' );
-            showCentersButton.html( '<a class="btn btn-block text-nowrap btn-primary" href=#" role="button">Centros <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#arrow-right-circle"/></svg></a>' );    
+            showCentersButton.html( '<a class="btn btn-block text-nowrap btn-disabled" href=#" role="button">Centros <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#arrow-right-circle"/></svg></a>' );    
+        } )
+        .on( 'search.dt', function () {
+            table.rows('.selected').deselect();
         } );
 });
 </script>
