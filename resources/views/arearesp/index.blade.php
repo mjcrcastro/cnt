@@ -6,6 +6,11 @@
 <link rel="stylesheet" type="text/css" href="/vendor/datatables/css/dataTables.bootstrap4.min.css"/>
 <link href="/vendor/datatables/css/select.bootstrap4.min.css" rel="stylesheet" type="text/css"/>
 @stop
+
+@section('page_title')
+  Areas de Responsabilidad
+@stop
+
 @section('main')
 
 <input type="hidden"  id="csrf" value="{{ csrf_token() }}">
@@ -17,10 +22,6 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md">
-                        <h6 class="m-0 font-weight-bold text-secondary">Areas de Responsabilidad</h6>
-                    </div>  
-                    <div class="col-md">
-
                         <a class="btn btn-block text-nowrap btn-primary" href="{{ route('arearesp.create')}}" role="button">Nuevo  
                             <svg class="bi" width="24" height="24" fill="currentColor">
                             <use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#plus-circle"/>

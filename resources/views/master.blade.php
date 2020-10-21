@@ -28,7 +28,7 @@
         <div id="wrapper">
 
             <!-- Sidebar -->
-            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
                 <!-- Sidebar - Brand -->
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -137,12 +137,32 @@
 
                 <!-- Nav Item - Tables -->
                 <li class="nav-item">
-                    <a class="nav-link" href="tables.html">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTables" aria-expanded="true" aria-controls="collapseTables">
                         <svg class="bi" width="16" height="16" fill="currentColor">
                         <use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#table"/>
                         </svg>
-                        <span>Tables</span>
+                        <span>Tablas</span>
                     </a>
+                    <div id="collapseTables" class="collapse" aria-labelledby="headingTables" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Generales:</h6>
+                            <a class="collapse-item" href="#">Paises y Ciudades</a>
+                            <a class="collapse-item" href="#">Personas</a>
+                            <a class="collapse-item" href="#">Tasas de Cambio</a>
+                            <a class="collapse-item" href="#">Tipos de Comprobantes</a>
+                            <a class="collapse-item" href="#">Configuracion de Notas de Crédito</a>
+                            <a class="collapse-item" href="#">Configuracion de Notas de Débito</a>
+                            <div class="collapse-divider"></div>
+                            <h6 class="collapse-header">Catálogo de Cuentas:</h6>
+                            <a class="collapse-item" href=" {{ route('arearesp.index') }}">Areas y Centros de Análisis</a>
+                            <a class="collapse-item" href="#">Grupos de SubSubCuentas Automáticas</a>
+                            <a class="collapse-item" href="#">Clasificación de Cuentas</a>
+                            <a class="collapse-item" href="#">Cuentas con Mantenimiento de Valor</a>
+                            <a class="collapse-item" href="#">Naturaleza de Cuentas</a>
+                            <a class="collapse-item" href="#">Tipos/Monedas de Cuentas</a>
+                        </div>
+                    </div>
+
                 </li>
 
                 <!-- Divider -->
@@ -183,6 +203,9 @@
                                 </div>
                             </div>
                         </form>
+                        <div class="col-md">
+                            <h5 class="m-0 font-weight-bold text-secondary align-middle"> @yield('page_title') </h5>
+                        </div>
                         @if (Session::has('message'))
                         <div class="alert alert-warning" role="alert">
                             {{Session::get('message')}}
