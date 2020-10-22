@@ -24,3 +24,9 @@ Route::get('arearesp_ajax',[App\Http\Controllers\AreaRespController::class, 'are
 //Centros de análisis
 Route::resource('costCenters', 'App\Http\Controllers\CostCenterController');
 Route::get('cost_centers_ajax',[App\Http\Controllers\CostCenterController::class, 'costCenterAjax']);
+//Countries
+Route::resource('countries', 'App\Http\Controllers\CountryController');
+Route::get('countries_ajax',[App\Http\Controllers\CountryController::class, 'countriesAjax']);
+//Ciudades
+Route::resource('cities', 'App\Http\Controllers\CityController');
+Route::get('cities_ajax',[App\Http\Controllers\CityController::class, 'citiesAjax']);

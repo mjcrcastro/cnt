@@ -2,30 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AreaResp;
-use App\Models\CostCenter;
+use App\Models\City;
+use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
-
-class CostCenterController extends Controller {
-
+class CityController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
-        $arearesp = AreaResp::find($request->area_resp_id);
-        if (!($arearesp)) {
-            return redirect()->route('arearesp.index')->with('message', 'Seleccione un Area de Responsabilidad');
+    public function index(Request $request)
+    {
+        $country = Country::find($request->country_id);
+        if (!($country)) {
+            return redirect()->route('countries.index')->with('message', 'Seleccione un País');
         }
         
-        //return $arearesp;
-
-        //Lista todos los centros de análisis de un area de responsabilidad (area_resp_id)
-        return view('costCenters.index', compact('arearesp'));
+        //Lista todas las ciudades de un pais (country_id)
+        return view('city.index', compact('country'));
     }
 
     /**
@@ -33,18 +31,19 @@ class CostCenterController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request) {
-        //Display new costCenter Form
+    public function create(Request $request)
+    {
+         //Display new City Form
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) {
             return redirect()->back()->with('msg', $message);
         }
-        $arearesp = AreaResp::find($request->area_resp_id);
-        if (!($arearesp)) {
-            return redirect()->route('arearesp.index')->with('message', 'Seleccione un Area de Responsabilidad');
+        $country = Country::find($request->country_id);
+        if (!($country)) {
+            return redirect()->route('countries.index')->with('message', 'Seleccione un País');
         }
-        return view('costCenters.create', compact('arearesp'));
+        return view('city.create', compact('country'));
     }
 
     /**
@@ -53,7 +52,8 @@ class CostCenterController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         //name of the action code, a corresponding entry in actions table
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
 
@@ -64,53 +64,55 @@ class CostCenterController extends Controller {
         $request->merge(['created_by' => 'default created']);
         $request->merge(['updated_by' => 'default created']);
         $request->validate(array(
-            'description' => ['required', Rule::unique('cost_centers')->where(function ($query) use($request) {
-                            return $query->where('area_resp_id', '=',$request->area_resp_id);
+            'description' => ['required', Rule::unique('cities')->where(function ($query) use($request) {
+                            return $query->where('country_id', '=',$request->country_id);
                         })],
-            'area_resp_id' => 'required'
+            'country_id' => 'required'
         ));
         //if valid data, create a new Area de Responsabilidad
-        $costCenter = CostCenter::create($request->all());
-        $area_resp_id = $request->area_resp_id; //el indice requiere el area de responsabilidad
+        $city = City::create($request->all());
+        $country_id = $request->country_id; //el indice requiere el area de responsabilidad
         //and return to the index
-        return redirect()->route('costCenters.index', compact('area_resp_id'))
-                        ->with('message', 'Centro de Costo ' . $costCenter->description . ' registrado');
+        return redirect()->route('cities.index', compact('country_id'))
+                        ->with('message', 'Ciudad ' . $city->description . ' registrada');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CostCenter  $costCenter
+     * @param  \App\Models\City  $city
      * @return \Illuminate\Http\Response
      */
-    public function show() {
+    public function show(City $city)
+    {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\CostCenter  $costCenter
+     * @param  \App\Models\City  $city
      * @return \Illuminate\Http\Response
      */
-    public function edit($id) {
-         //Redirect to arearesp editor
+    public function edit($id)
+    {
+         //Redirect to City editor
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) { //I the user does not have permissions
             return redirect()->back()->with('message', $message);
         }
         
-        $costCenter = CostCenter::find($id);
+        $city = City::find($id);
         
-        if (is_null($costCenter)) { //if no Cost Center is found
-            return redirect()->route('arearesp.index'); //go to previous page
+        if (is_null($city)) { //if no Cost City is found
+            return redirect()->route('countries.index'); //go to previous page
         }
         
-        $arearesp = AreaResp::find($costCenter->area_resp_id);
+        $country = Country::find($city->country_id);
 
-        //otherwise display the shop editor view
-        return view('costCenters.edit', compact('arearesp','costCenter'));
+        //otherwise display the city editor view
+        return view('city.edit', compact('country','city'));
         // End of actual code to execute
     }
 
@@ -118,10 +120,11 @@ class CostCenterController extends Controller {
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\CostCenter  $costCenter
+     * @param  \App\Models\City  $city
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) {
@@ -132,53 +135,53 @@ class CostCenterController extends Controller {
         //exclude the $id for the current shop
         $request->merge(['updated_by' => 'default created']);
         $request->validate(array(
-            'description' => ['required', Rule::unique('cost_centers')->where(function ($query) use($request, $id) {
-                            return $query->where('area_resp_id', '=',$request->area_resp_id)
+            'description' => ['required', Rule::unique('cities')->where(function ($query) use($request, $id) {
+                            return $query->where('country_id', '=',$request->country_id)
                                          ->where('id','<>',$id);
                         })],
-            'area_resp_id' => 'required'
+            'country_id' => 'required'
         ));
-        $costCenter = CostCenter::find($id);
-        $costCenter->update($request->all());
-        $area_resp_id =$costCenter->area_resp_id;
-        return redirect()->route('costCenters.index',compact('area_resp_id'));
+        $city = City::find($id);
+        $city->update($request->all());
+        $country_id =$city->country_id;
+        return redirect()->route('cities.index',compact('country_id'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CostCenter  $costCenter
+     * @param  \App\Models\City  $city
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) {
             return redirect()->back()->with('message', $message);
         }
-        $area_resp_id = CostCenter::find($id)->area_resp_id;
-        CostCenter::find($id)->delete();
-        return redirect()->route('costCenters.index',compact('area_resp_id'));
+        $country_id = City::find($id)->country_id;
+        City::find($id)->delete();
+        return redirect()->route('cities.index',compact('country_id'));
     }
-
-    public function costCenterAjax(Request $request) {
+    
+    public function citiesAjax(Request $request) {
 
         if ($request->ajax()) {//return json data only to ajax queries 
         $filter = $request->search['value'];
-        $centros = CostCenter::where('area_resp_id', '=', $request->area_resp_id)
+        $cities = City::where('country_id', '=', $request->country_id)
                 ->where('description', 'LIKE', "%" . $filter . "%")
                 ->orderBy('description', $request->order[0]['dir'])
                 ->get();
 
         $response['draw'] = $request->get('draw');
 
-        $response['recordsTotal'] = CostCenter::where('area_resp_id', '=', $request->area_resp_id)->count();
+        $response['recordsTotal'] = City::where('country_id', '=', $request->country_id)->count();
 
-        $response['recordsFiltered'] = $centros->count();
+        $response['recordsFiltered'] = $cities->count();
 
-        $response['data'] = array_slice($centros->toArray(), $request->get('start'), $request->get('length'));
+        $response['data'] = array_slice($cities->toArray(), $request->get('start'), $request->get('length'));
         return response()->json($response);
         }
     }
-
 }

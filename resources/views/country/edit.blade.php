@@ -12,14 +12,14 @@
         <div class="card-header py-3">
             <div class="container-fluid">
                 <div class="col-sm">
-                    <h6 class="m-0 font-weight-bold text-secondary"> Editar Area {{ $arearesp->description }} </h6>
+                    <h6 class="m-0 font-weight-bold text-secondary"> Editar País {{ $country->description }} </h6>
                 </div>
             </div>
         </div>
         <div class="card-body">
             <div class="container-fluid">
-                {{ Form::model($arearesp, array('method'=>'PATCH', 'route'=> array('arearesp.update', $arearesp->id)))  }}
-                @include('arearesp.form')
+                {{ Form::model($country, array('method'=>'PATCH', 'route'=> array('countries.update', $country->id)))  }}
+                @include('country.form')
                 {{ Form::close() }}
             </div>
         </div>

@@ -146,7 +146,7 @@
                     <div id="collapseTables" class="collapse" aria-labelledby="headingTables" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <h6 class="collapse-header">Generales:</h6>
-                            <a class="collapse-item" href="#">Paises y Ciudades</a>
+                            <a class="collapse-item" href="{{ route('countries.index') }}">Paises y Ciudades</a>
                             <a class="collapse-item" href="#">Personas</a>
                             <a class="collapse-item" href="#">Tasas de Cambio</a>
                             <a class="collapse-item" href="#">Tipos de Comprobantes</a>
