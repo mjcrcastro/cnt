@@ -94,7 +94,7 @@ class CityController extends Controller
      * @param  \App\Models\City  $city
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(City $city)
     {
          //Redirect to City editor
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
@@ -102,8 +102,6 @@ class CityController extends Controller
         if ($message) { //I the user does not have permissions
             return redirect()->back()->with('message', $message);
         }
-        
-        $city = City::find($id);
         
         if (is_null($city)) { //if no Cost City is found
             return redirect()->route('countries.index'); //go to previous page

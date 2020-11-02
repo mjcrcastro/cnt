@@ -93,15 +93,13 @@ class CostCenterController extends Controller {
      * @param  \App\Models\CostCenter  $costCenter
      * @return \Illuminate\Http\Response
      */
-    public function edit($id) {
+    public function edit(CostCenter $costCenter) {
          //Redirect to arearesp editor
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) { //I the user does not have permissions
             return redirect()->back()->with('message', $message);
         }
-        
-        $costCenter = CostCenter::find($id);
         
         if (is_null($costCenter)) { //if no Cost Center is found
             return redirect()->route('arearesp.index'); //go to previous page

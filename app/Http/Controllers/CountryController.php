@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\country;
+use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -80,7 +80,7 @@ class CountryController extends Controller
      * @param  \App\Models\countries  $countries
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Country $country)
     {
         //Redirect to country editor
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
@@ -88,8 +88,6 @@ class CountryController extends Controller
         if ($message) { //I the user does not have permissions
             return redirect()->back()->with('message', $message);
         }
-
-        $country = Country::find($id);
 
         if (is_null($country)) { //if no shop is found
             return redirect()->route('countries.index'); //go to previous page

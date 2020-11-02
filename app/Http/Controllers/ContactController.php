@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AreaResp;
+use App\Models\Contact;
+use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-class AreaRespController extends Controller {
-
+class ContactController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        //
-        return view('arearesp.index');
+    public function index()
+    {
+        //Show list of Contacts
+        return view('contact.index');
     }
 
     /**
@@ -23,14 +26,19 @@ class AreaRespController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
-        //Display new AreaResp Form
+    public function create()
+    {
+        //Display new Contact Form
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) {
             return redirect()->back()->with('message', $message);
         }
-        return view('arearesp.create');
+        
+        $cities = City::orderBy('description', 'asc')
+                ->pluck('description', 'id');
+        
+        return view('contact.create',compact('cities'));
     }
 
     /**
@@ -39,8 +47,9 @@ class AreaRespController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
-        //name of the action code, a corresponding entry in actions table
+    public function store(Request $request)
+    {
+         //name of the action code, a corresponding entry in actions table
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
 
         $message = userCan($action_code, Auth::user());
@@ -51,45 +60,48 @@ class AreaRespController extends Controller {
         $request->merge(['created_by' => 'default created']);
         $request->merge(['updated_by' => 'default created']);
 
-        $request->validate(AreaResp::$createRules);
+        $request->validate(Contact::$createRules);
 
-        //if valid data, create a new Area de Responsabilidad
-        $area_resp = AreaResp::create($request->all());
+        //if valid data, create a new country entry
+        $contact = Contact::create($request->all());
         //and return to the index
-        return redirect()->route('arearesp.index')
-                        ->with('message', 'Area ' . $area_resp->description . ' Registrada');
+        return redirect()->route('contacts.index')
+                        ->with('message', 'Contacto ' . $contact->first_name . ' Registrado');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\AreaResp  $areaResp
+     * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function show(AreaResp $areaResp) {
+    public function show(Contact $contact)
+    {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\AreaResp  $areaResp
+     * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function edit(AreaResp $arearesp) {
-        //Redirect to arearesp editor
+    public function edit(Contact $contact)
+    { 
+       //Redirect to contact editor
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) { //I the user does not have permissions
             return redirect()->back()->with('message', $message);
         }
 
-        if (is_null($arearesp)) { //if no shop is found
-            return redirect()->route('arearesp.index'); //go to previous page
+        if (is_null($contact)) { //if no shop is found
+            return redirect()->route('contacts.index'); //go to previous page
         }
-
+        $cities = City::orderBy('description', 'asc')
+                ->pluck('description', 'id');
         //otherwise display the shop editor view
-        return view('arearesp.edit', compact('arearesp'));
+        return view('contact.edit', compact('contact','cities'));
         // End of actual code to execute
     }
 
@@ -97,11 +109,12 @@ class AreaRespController extends Controller {
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\AreaResp  $areaResp
+     * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
-        //
+    public function update(Request $request, Contact $contact)
+    {
+         ///
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) {
@@ -109,53 +122,49 @@ class AreaRespController extends Controller {
         }
         //make sure the description is unique but 
         //exclude the $id for the current shop
-        $request->validate(['description' => 'required|unique:area_resps,description,' . $id . 'id']);
 
-        $arearesp = AreaResp::find($id);
-        $arearesp->update($request->all());
-        return redirect()->route('arearesp.index');
+        $contact->update($request->all());
+        
+        return redirect()->route('contacts.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\AreaResp  $areaResp
+     * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
-        $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
-        $message = usercan($action_code, Auth::user());
-        if ($message) {
-            return redirect()->back()->with('message', $message);
-        }
-        AreaResp::find($id)->delete();
-        return redirect()->route('arearesp.index');
+    public function destroy(Contact $contact)
+    {
+        //
     }
-
-    public function arearespAjax(Request $request) {
-
+    
+    public function contactsAjax(Request $request) {
+        //returns list of countries
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) {
             return redirect()->back()->withErrors('message', $message);
         }
         if ($request->ajax()) {//return json data only to ajax queries 
+            $columnIndex = $request->order[0]['column'];
+            $orderBy = $request->columns[$columnIndex]['data'];
             $filter = $request->search['value'];
-
-            $arearesp = AreaResp::where('description', 'LIKE', "%" . $filter . "%")
-                    ->orderBy('description', $request->order[0]['dir'])
+            $contact = Contact::where(DB::raw('concat("name", "last_name")'), 'LIKE', "%" . $filter . "%")
+                    ->orderBy($orderBy, $request->order[0]['dir'])
                     ->get();
 
             $response['draw'] = $request->get('draw');
 
-            $response['recordsTotal'] = AreaResp::all()->count();
+            $response['recordsTotal'] = Contact::all()->count();
 
-            $response['recordsFiltered'] = $arearesp->count();
+            $response['recordsFiltered'] = $contact->count();
 
-            $response['data'] = array_slice($arearesp->toArray(), $request->get('start'), $request->get('length'));
+            $response['data'] = array_slice($contact->toArray(), $request->get('start'), $request->get('length'));
 
             return response()->json($response);
-        }
+       }
     }
-
 }
+
+

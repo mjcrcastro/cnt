@@ -1,9 +1,5 @@
 @extends('master')
 
-@section('page_title')
-  Contactos
-@stop
-
 @section('main')
 
 <div class="container-fluid">
@@ -11,7 +7,7 @@
         <div class="card-header py-3">
             <div class="container-fluid">
                 <div class="col-sm">
-                    <h6 class="m-0 font-weight-bold text-secondary">{{ link_to_route('contact.index',$arearesp->description, Null, 'class="text-primary"') }} / Nuevo Contacto</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Nuevo Contacto</h6>
                 </div>
             </div>
         </div>
@@ -23,5 +19,5 @@
             </div>
         </div>
     </div>
-</div>
+
 @stop

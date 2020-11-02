@@ -30,3 +30,6 @@ Route::get('countries_ajax',[App\Http\Controllers\CountryController::class, 'cou
 //Ciudades
 Route::resource('cities', 'App\Http\Controllers\CityController');
 Route::get('cities_ajax',[App\Http\Controllers\CityController::class, 'citiesAjax']);
+//Contacts
+Route::resource('contacts', 'App\Http\Controllers\ContactController');
+Route::get('contacts_ajax',[App\Http\Controllers\ContactController::class, 'contactsAjax']);
