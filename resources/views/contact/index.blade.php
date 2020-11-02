@@ -8,7 +8,7 @@
 @stop
 
 @section('page_title')
-  Contactos
+Contactos
 @stop
 
 @section('main')
@@ -28,14 +28,14 @@
                             </svg>
                         </a>
                     </div>
-                    <div id="editContact" class="col-md">
-                        <a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Editar
+                    <div class="col-md">
+                        <a id="editContact" class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Editar
                             <svg class="bi" width="24" height="24" fill="currentColor">
                             <use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#pencil-square"/>
                             </svg>
                         </a>
                     </div>
-                    <div id ="deleteContact" class="col-md">
+                    <div id='deleteDiv' class="col-md">
                         <a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Borrar
                             <svg class="bi" width="24" height="24" fill="currentColor">
                             <use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#x-circle"/>
@@ -86,9 +86,7 @@
  */
 $(document).ready(function () {
     var editButton = $('#editContact');
-    var deleButton = $('#deleteContact');
-    var showCentersButton = $('#showCenters');
-    var csrf = $('#csrf');
+    var deleDiv = $('#deleteDiv');
     var table = $('#contactTable').DataTable({
         "processing": true,
         "serverSide": true,
@@ -98,7 +96,7 @@ $(document).ready(function () {
         "ajax": {
             "url": "{{ url('/contacts_ajax') }}",
             "type": "GET",
-            'headers': {'X-CSRF-TOKEN':  $('meta[name="csrf-token"]').attr('content')
+            'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         },
         "columnDefs": [
@@ -114,23 +112,31 @@ $(document).ready(function () {
             {"data": "last_name"}
         ]
     });
-     table //here we change 
-        .on( 'select', function ( e, dt, type, indexes ) {
-            var rowData = table.rows( indexes ).data().toArray();
-            editButton.html( '<a class="btn btn-block text-nowrap btn-primary" href="/contacts/'+ rowData[0]['id'] + '/edit" role="button">Editar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#pencil-square"/></svg></a>' );
-            deleButton.html( '<form method="POST" action="/contacts/' + rowData[0]['id'] + '" accept-charset="UTF-8">' +
+    table //here we change 
+            .on('select', function (e, dt, type, indexes) {
+                var rowData = table.rows(indexes).data().toArray();
+                //manage the edit button 
+                editButton.attr('href', '/contacts/' + rowData[0]['id'] + '/edit');
+                editButton.addClass('btn-primary');
+                editButton.removeClass('btn-disabled');
+                //manage the delete button
+                
+                deleDiv.html( '<form method="POST" action="/contacts/' + rowData[0]['id'] + '" accept-charset="UTF-8">' +
                         '<input name="_method" type="hidden" value="DELETE">' +
                         '<input name="_token" type="hidden" value="' + $('meta[name="csrf-token"]').attr('content') + '">' +
                         '<button class="btn btn-block text-nowrap btn-primary " onclick="if(!confirm(&#039;Are you sure to delete this item?&#039;)){return false;};" type="submit" value="Delete">Borrar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#x-circle"/></svg></button>' +
                         '</form>');
-        } )
-        .on( 'deselect', function ( e, dt, type, indexes ) {
-            editButton.html( '<a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Editar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#pencil-square"/></svg></a>' );
-            deleButton.html( '<a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Borrar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#x-circle"/></svg></a>' );
-        } )
-        .on( 'search.dt', function () {
-            table.rows('.selected').deselect();
-        } );
+            })
+            .on('deselect', function (e, dt, type, indexes) {
+                editButton.attr('href', '#'); //remove href
+                editButton.removeClass('btn-primary'); //remove primary class
+                editButton.addClass('btn-disabled');  //add disabled class
+
+                deleDiv.html( '<a class="btn btn-block text-nowrap btn-disabled" href="#" role="button">Borrar <svg class="bi" width="24" height="24" fill="currentColor"><use xlink:href="/vendor/bootstrap/img/bootstrap-icons.svg#x-circle"/></svg></a>' );
+            })
+            .on('search.dt', function () {
+                table.rows('.selected').deselect();
+            });
 });
 </script>
 
