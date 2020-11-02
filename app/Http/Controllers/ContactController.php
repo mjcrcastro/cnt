@@ -8,15 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class ContactController extends Controller
-{
+class ContactController extends Controller {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         //Show list of Contacts
         return view('contact.index');
     }
@@ -26,19 +25,18 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //Display new Contact Form
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) {
             return redirect()->back()->with('message', $message);
         }
-        
+
         $cities = City::orderBy('description', 'asc')
                 ->pluck('description', 'id');
-        
-        return view('contact.create',compact('cities'));
+
+        return view('contact.create', compact('cities'));
     }
 
     /**
@@ -47,9 +45,8 @@ class ContactController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-         //name of the action code, a corresponding entry in actions table
+    public function store(Request $request) {
+        //name of the action code, a corresponding entry in actions table
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
 
         $message = userCan($action_code, Auth::user());
@@ -75,8 +72,7 @@ class ContactController extends Controller
      * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function show(Contact $contact)
-    {
+    public function show(Contact $contact) {
         //
     }
 
@@ -86,9 +82,8 @@ class ContactController extends Controller
      * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function edit(Contact $contact)
-    { 
-       //Redirect to contact editor
+    public function edit(Contact $contact) {
+        //Redirect to contact editor
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) { //I the user does not have permissions
@@ -101,7 +96,7 @@ class ContactController extends Controller
         $cities = City::orderBy('description', 'asc')
                 ->pluck('description', 'id');
         //otherwise display the shop editor view
-        return view('contact.edit', compact('contact','cities'));
+        return view('contact.edit', compact('contact', 'cities'));
         // End of actual code to execute
     }
 
@@ -112,9 +107,8 @@ class ContactController extends Controller
      * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact)
-    {
-         ///
+    public function update(Request $request, Contact $contact) {
+        ///
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
         $message = usercan($action_code, Auth::user());
         if ($message) {
@@ -122,9 +116,11 @@ class ContactController extends Controller
         }
         //make sure the description is unique but 
         //exclude the $id for the current shop
-
+        $request->validate(array(
+            'first_name' => 'required',
+        ));
         $contact->update($request->all());
-        
+
         return redirect()->route('contacts.index');
     }
 
@@ -134,11 +130,16 @@ class ContactController extends Controller
      * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Contact $contact)
-    {
-        //
+    public function destroy(Contact $contact) {
+        $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
+        $message = usercan($action_code, Auth::user());
+        if ($message) {
+            return redirect()->back()->with('message', $message);
+        }
+        $contact->delete();
+        return redirect()->route('contacts.index');
     }
-    
+
     public function contactsAjax(Request $request) {
         //returns list of countries
         $action_code = basename(__FILE__, '.php') . '_' . __FUNCTION__; //returns filename_function as a string
@@ -150,7 +151,8 @@ class ContactController extends Controller
             $columnIndex = $request->order[0]['column'];
             $orderBy = $request->columns[$columnIndex]['data'];
             $filter = $request->search['value'];
-            $contact = Contact::where(DB::raw('concat("name", "last_name")'), 'LIKE', "%" . $filter . "%")
+
+            $contact = Contact::where(DB::raw('concat(COALESCE(`first_name`,""), " ", COALESCE(`last_name`,""))'), 'LIKE', "%" . $filter . "%")
                     ->orderBy($orderBy, $request->order[0]['dir'])
                     ->get();
 
@@ -163,8 +165,7 @@ class ContactController extends Controller
             $response['data'] = array_slice($contact->toArray(), $request->get('start'), $request->get('length'));
 
             return response()->json($response);
-       }
+        }
     }
+
 }
-
-
