@@ -19,8 +19,9 @@ class CreateContactsTable extends Migration
             $table->string('last_name')->nullable();
             $table->string('address')->nullable();
             $table->foreignId('city_id')->nullable();
-            $table->foreignId('phone_list_id')->nullable();
-            $table->foreignId('doc_list_id')->nullable();
+            $table->string('phones')->nullable();
+            $table->string('identification')->nullable();
+            $table->string('RUC')->nullable();
             $table->char('created_by',255);
             $table->char('updated_by',255);
             $table->timestamps();

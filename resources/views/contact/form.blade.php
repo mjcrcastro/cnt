@@ -36,7 +36,40 @@
         {{ $errors->first('city_id', ':message') }} 
     </div>
     @endif
-    <p></p>
-    {{ Form::submit('Guardar', array('class'=>'btn  btn-primary col-xs-6')) }}
-    {{ link_to_route('contacts.index', 'Cancelar', [],array('class'=>'btn  btn-outline-info col-xs-6')) }}
+
+
 </div>
+
+<div class="form-group @if ($errors->has('phones')) is-invalid @endif">
+    {{ Form::label('phones', 'Teléfonos:') }}
+    {{ Form::text('phones', null, array('class="form-control"')) }}
+    @if ($errors->has('phones')) 
+    <div class="small alert alert-warning">
+        {{ $errors->first('phones', ':message') }} 
+    </div>
+    @endif
+</div>
+
+<div class="form-group @if ($errors->has('identification')) is-invalid @endif">
+    {{ Form::label('identification', 'Identificacion:') }}
+    {{ Form::text('identification', null, array('class="form-control"')) }}
+    @if ($errors->has('phones')) 
+    <div class="small alert alert-warning">
+        {{ $errors->first('identification', ':message') }} 
+    </div>
+    @endif
+</div>
+
+<div class="form-group @if ($errors->has('RUC')) is-invalid @endif">
+    {{ Form::label('RUC', 'RUC:') }}
+    {{ Form::text('RUC', null, array('class="form-control"')) }}
+    @if ($errors->has('phones')) 
+    <div class="small alert alert-warning">
+        {{ $errors->first('RUC', ':message') }} 
+    </div>
+    @endif
+</div
+
+<p></p>
+{{ Form::submit('Guardar', array('class'=>'btn  btn-primary col-xs-6')) }}
+{{ link_to_route('contacts.index', 'Cancelar', [],array('class'=>'btn  btn-outline-info col-xs-6')) }}
