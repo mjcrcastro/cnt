@@ -148,7 +148,7 @@
                             <h6 class="collapse-header">Generales:</h6>
                             <a class="collapse-item" href="{{ route('countries.index') }}">Paises y Ciudades</a>
                             <a class="collapse-item" href="{{ route('contacts.index') }}">Personas</a>
-                            <a class="collapse-item" href="#">Tasas de Cambio</a>
+                            <a class="collapse-item" href="{{ route('exchangerates.index') }}">Tasas de Cambio</a>
                             <a class="collapse-item" href="#">Tipos de Comprobantes</a>
                             <a class="collapse-item" href="#">Configuracion de Notas de Crédito</a>
                             <a class="collapse-item" href="#">Configuracion de Notas de Débito</a>

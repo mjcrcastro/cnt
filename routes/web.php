@@ -33,3 +33,6 @@ Route::get('cities_ajax',[App\Http\Controllers\CityController::class, 'citiesAja
 //Contacts
 Route::resource('contacts', 'App\Http\Controllers\ContactController');
 Route::get('contacts_ajax',[App\Http\Controllers\ContactController::class, 'contactsAjax']);
+//Exchange Rates
+Route::resource('exchangerates', 'App\Http\Controllers\ExchangeRateController');
+Route::get('exchangerates_ajax',[App\Http\Controllers\ExchangeRateController::class, 'exchangeratesAjax']);
