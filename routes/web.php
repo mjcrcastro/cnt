@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
+//Catalogo de Cuentas
 Route::resource('catalog', 'App\Http\Controllers\CatalogController');
 //Areas de Responsabilidad
 Route::resource('arearesp', 'App\Http\Controllers\AreaRespController');

@@ -21,6 +21,24 @@
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive-sm">
+                <table class="table table-striped table-bordered" id="centrosTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr >
+                            <th></th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th>Descripción</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
         <div class="card-header py-3">
             <div class="container-fluid">
                 <div class="row">
@@ -54,24 +72,6 @@
                         </a>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive-sm">
-                <table class="table table-striped table-bordered" id="centrosTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr >
-                            <th></th>
-                            <th>Descripción</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th></th>
-                            <th>Descripción</th>
-                        </tr>
-                    </tfoot>
-                </table>
             </div>
         </div>
     </div>

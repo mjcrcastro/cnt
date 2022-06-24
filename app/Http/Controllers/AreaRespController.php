@@ -128,8 +128,10 @@ class AreaRespController extends Controller {
         if ($message) {
             return redirect()->back()->with('message', $message);
         }
-        AreaResp::find($id)->delete();
-        return redirect()->route('arearesp.index');
+        $noDeleteMsg = 'Borrado no permitido, reutilice el código '.sprintf("%02d", $id);
+        return redirect()->back()->with('message', $noDeleteMsg);
+        //AreaResp::find($id)->delete();
+        //return redirect()->route('arearesp.index');
     }
 
     public function arearespAjax(Request $request) {

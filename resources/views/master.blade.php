@@ -155,6 +155,7 @@
                             <div class="collapse-divider"></div>
                             <h6 class="collapse-header">Catálogo de Cuentas:</h6>
                             <a class="collapse-item" href=" {{ route('arearesp.index') }}">Areas y Centros de Análisis</a>
+                            <a class="collapse-item" href=" {{ route('catalog.index') }}">Catálogo</a>
                             <a class="collapse-item" href="#">Grupos de SubSubCuentas Automáticas</a>
                             <a class="collapse-item" href="#">Clasificación de Cuentas</a>
                             <a class="collapse-item" href="#">Cuentas con Mantenimiento de Valor</a>
